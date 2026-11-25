@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Защита персональных данных в мобильных приложениях | Исследование</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        img, svg {
+            max-width: 100%;
+            display: block;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .section {
+            padding: 80px 0;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #0b1e33;
+            letter-spacing: -0.02em;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #475569;
+            max-width: 720px;
+            margin-bottom: 48px;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .btn {
+            display: inline-block;
+            background: #1e40af;
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.1s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background: #1e3a8a;
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.9);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #0b1e33;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #1e40af;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .nav {
+            display: flex;
+            gap: 8px;
+        }
+        .nav a {
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            color: #334155;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav a:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #0f172a;
+        }
+
+        /* ----- HERO ----- */
+        .hero {
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            padding: 80px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .hero-content {
+            max-width: 800px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 100px;
+            margin-bottom: 24px;
+            letter-spacing: 0.3px;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            line-height: 1.2;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            color: #0b1e33;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #475569;
+            margin-bottom: 32px;
+            max-width: 640px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* ----- CARDS & GRIDS ----- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
+            transform: translateY(-2px);
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: #eff6ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0b1e33;
+        }
+        .card p {
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        /* ----- THREAT SECTION (OWASP) ----- */
+        .owasp-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+        }
+        .owasp-item {
+            background: #ffffff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+            padding: 20px 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .owasp-item .code {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        .owasp-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 4px 0 8px;
+            color: #0f172a;
+        }
+        .owasp-item p {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* ----- TABLE ----- */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 32px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 16px 20px;
+            font-weight: 600;
+            color: #0b1e33;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: top;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* ----- TOOLS TABS ----- */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 16px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #64748b;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .tab-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .tab-btn.active {
+            background: #1e40af;
+            color: #ffffff;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tool-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        .tool-detail h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #0b1e33;
+        }
+        .tool-detail p {
+            color: #475569;
+            margin-bottom: 16px;
+        }
+        .tool-detail ul {
+            list-style: none;
+            padding: 0;
+        }
+        .tool-detail ul li {
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+            color: #334155;
+        }
+        .tool-detail ul li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        /* ----- PROTOTYPE SECTION ----- */
+        .architecture-diagram {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 40px;
+            margin: 32px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+        .arch-placeholder {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .arch-box {
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-weight: 600;
+            color: #1e40af;
+            font-size: 0.9rem;
+            min-width: 140px;
+            text-align: center;
+        }
+        .arch-box.primary {
+            background: #1e40af;
+            border-color: #1e40af;
+            color: #ffffff;
+        }
+        .arch-row {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 8px 0;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 24px 0;
+        }
+        .code-block .keyword { color: #c084fc; }
+        .code-block .string { color: #a5f3fc; }
+        .code-block .comment { color: #64748b; }
+        .code-block .func { color: #fbbf24; }
+
+        /* ----- RESULTS ----- */
+        .chart-container {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 32px;
+        }
+        .chart-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 24px;
+        }
+        .chart-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .chart-label {
+            width: 180px;
+            font-size: 0.9rem;
+            color: #334155;
+            flex-shrink: 0;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            background: #f1f5f9;
+            border-radius: 100px;
+            height: 28px;
+            overflow: hidden;
+            position: relative;
+        }
+        .chart-bar {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, #3b82f6, #1e40af);
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            min-width: 40px;
+        }
+        .chart-bar.orange {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+        .chart-bar.red {
+            background: linear-gradient(90deg, #ef4444, #b91c1c);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            line-height: 1.2;
+        }
+        .metric-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* ----- RECOMMENDATIONS ----- */
+        .rec-list {
+            display: grid;
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .rec-item {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+        .rec-number {
+            width: 40px;
+            height: 40px;
+            background: #eff6ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1e40af;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        .rec-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0b1e33;
+        }
+        .rec-content p {
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        /* ----- FOOTER ----- */
+        .footer {
+            background: #0b1e33;
+            color: #94a3b8;
+            padding: 48px 0;
+            margin-top: 40px;
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .footer p {
+            font-size: 0.9rem;
+        }
+        .footer a {
+            color: #cbd5e1;
+            transition: color 0.2s;
+        }
+        .footer a:hover {
+            color: #ffffff;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 768px) {
+            .header-inner {
+                height: 64px;
+            }
+            .nav {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: #ffffff;
+                flex-direction: column;
+                padding: 16px 24px;
+                border-bottom: 1px solid #e2e8f0;
+                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            }
+            .nav.open {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .section {
+                padding: 60px 0;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .tool-detail {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .rec-item {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .chart-label {
+                width: 120px;
+                font-size: 0.8rem;
+            }
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="container header-inner">
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+            <span>PrivacyShield</span>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню">☰</button>
+        <nav class="nav" id="mainNav">
+            <a href="#intro">Введение</a>
+            <a href="#threats">Угрозы</a>
+            <a href="#tools">Инструменты</a>
+            <a href="#prototype">Прототип</a>
+            <a href="#results">Результаты</a>
+            <a href="#recommendations">Рекомендации</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge">Практическая работа №11</div>
+            <h1>Исследование методов защиты <span class="text-gradient">персональных данных</span> в мобильных приложениях</h1>
+            <p>Гибридный исследовательский проект: аналитический обзор угроз и практическая демонстрация прототипа с результатами экспериментов.</p>
+            <div class="hero-actions">
+                <a href="#prototype" class="btn">Смотреть прототип</a>
+                <a href="#results" class="btn btn-outline">Результаты экспериментов</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ВВЕДЕНИЕ ===== -->
+<section class="section" id="intro">
+    <div class="container">
+        <h2 class="section-title">Введение и актуальность</h2>
+        <p class="section-subtitle">Мобильные приложения обрабатывают всё больше персональных данных, а поверхность атаки расширяется. По данным Zimperium, около 60% iOS-приложений и до 43% Android-приложений уязвимы к утечке PII. В России до 88% популярных приложений содержат критически опасные уязвимости.</p>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3>Цель исследования</h3>
+                <p>Сравнительная экспериментальная оценка методов защиты персональных данных и разработка рекомендаций по построению защищённого мобильного приложения.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📋</div>
+                <h3>Задачи</h3>
+                <p>Анализ угроз OWASP Mobile Top 10, построение модели нарушителя, обоснование инструментов, реализация прототипа, серия экспериментов и количественная интерпретация.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🧪</div>
+                <h3>Методология</h3>
+                <p>Разделение методов на 4 группы: защита на устройстве, защита передаваемых данных, аутентификация и авторизация, противодействие анализу и модификации.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== УГРОЗЫ ===== -->
+<section class="section" id="threats" style="background: #ffffff;">
+    <div class="container">
+        <h2 class="section-title">Анализ угроз и модель нарушителя</h2>
+        <p class="section-subtitle">Классификация угроз по OWASP Mobile Top 10 (редакция 2024 года) и модель нарушителя, учитывающая три типа атакующих.</p>
+
+        <h3 style="font-size: 1.3rem; font-weight: 600; margin-top: 40px; margin-bottom: 16px;">Ключевые категории рисков OWASP Mobile Top 10</h3>
+        <div class="owasp-list">
+            <div class="owasp-item">
+                <span class="code">M1</span>
+                <h4>Ненадлежащее использование учётных данных</h4>
+                <p>Хранение паролей и токенов в открытом виде, жёстко закодированные секреты в коде.</p>
+            </div>
+            <div class="owasp-item">
+                <span class="code">M3</span>
+                <h4>Небезопасная аутентификация и авторизация</h4>
+                <p>Слабая интеграция биометрии, недостаточное управление сессиями, ошибки в OAuth-потоках.</p>
+            </div>
+            <div class="owasp-item">
+                <span class="code">M5</span>
+                <h4>Небезопасная передача данных</h4>
+                <p>Отсутствие TLS, слабая конфигурация, отсутствие certificate pinning.</p>
+            </div>
+            <div class="owasp-item">
+                <span class="code">M6</span>
+                <h4>Недостаточный контроль приватности</h4>
+                <p>Избыточный сбор данных, отсутствие прозрачности, несоответствие требованиям законодательства.</p>
+            </div>
+            <div class="owasp-item">
+                <span class="code">M9</span>
+                <h4>Небезопасное хранение данных</h4>
+                <p>Сохранение персональных данных в незашифрованных SharedPreferences или NSUserDefaults, логирование чувствительных сведений.</p>
+            </div>
+            <div class="owasp-item">
+                <span class="code">M10</span>
+                <h4>Недостаточная криптография</h4>
+                <p>Использование устаревших алгоритмов, небезопасных режимов шифрования, самостоятельная реализация криптографии.</p>
+            </div>
+        </div>
+
+        <h3 style="font-size: 1.3rem; font-weight: 600; margin-top: 48px; margin-bottom: 16px;">Модель нарушителя</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Тип нарушителя</th>
+                        <th>Возможности</th>
+                        <th>Мотивация</th>
+                        <th>Актуальные методы защиты</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Внешний атакующий (сетевой)</strong></td>
+                        <td>Перехват и модификация трафика, подмена сертификатов, MITM-атаки</td>
+                        <td>Кража учётных данных, платёжной информации</td>
+                        <td>TLS 1.2/1.3, certificate pinning, защита от downgrade</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Локальный атакующий (с физическим доступом)</strong></td>
+                        <td>Доступ к файловой системе устройства, чтение резервных копий, анализ локальных хранилищ</td>
+                        <td>Получение персональных данных, токенов, ключей</td>
+                        <td>Шифрование «at rest», аппаратно-защищённое хранение ключей (Keystore / Secure Enclave), блокировка доступа по биометрии</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Атакующий с инструментами обратной разработки</strong></td>
+                        <td>Декомпиляция, динамическая инструментация (Frida), патчинг, обход проверок</td>
+                        <td>Изучение логики, обход платных функций, извлечение секретов</td>
+                        <td>Обфускация, обнаружение root/jailbreak, защита от инструментации, целостность кода</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ИНСТРУМЕНТЫ ===== -->
+<section class="section" id="tools">
+    <div class="container">
+        <h2 class="section-title">Инструменты исследования</h2>
+        <p class="section-subtitle">Для экспериментальной оценки использовались средства статического и динамического анализа, а также сетевое тестирование.</p>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="mobsf">MobSF</button>
+            <button class="tab-btn" data-tab="semgrep">Semgrep</button>
+            <button class="tab-btn" data-tab="frida">Frida</button>
+            <button class="tab-btn" data-tab="objection">Objection</button>
+            <button class="tab-btn" data-tab="mitmproxy">mitmproxy</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-mobsf">
+            <div class="tool-detail">
+                <div>
+                    <h3>MobSF</h3>
+                    <p>Mobile Security Framework — открытая платформа для статического и динамического анализа Android и iOS приложений.</p>
+                    <p>Использовалась для сканирования APK/IPA, выявления небезопасного хранения, жёстко закодированных секретов и слабой криптографии.</p>
+                    <ul>
+                        <li>Автоматическая генерация отчётов</li>
+                        <li>Поддержка Android и iOS</li>
+                        <li>Открытый исходный код</li>
+                    </ul>
+                </div>
+                <div style="background: #eff6ff; border-radius: 12px; padding: 24px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                    <span style="font-size: 4rem;">📱</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="tab-semgrep">
+            <div class="tool-detail">
+                <div>
+                    <h3>Semgrep (mobile rules)</h3>
+                    <p>Статический анализатор кода с гибкими правилами, интегрируется в CI.</p>
+                    <p>Применялся для поиска небезопасных паттернов в исходном коде: использование криптографии, логирование ПДн.</p>
+                    <ul>
+                        <li>Низкий порог входа</li>
+                        <li>Хорошая интеграция в CI/CD</li>
+                        <li>Гибкие правила</li>
+                    </ul>
+                </div>
+                <div style="background: #eff6ff; border-radius: 12px; padding: 24px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                    <span style="font-size: 4rem;">🔍</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="tab-frida">
+            <div class="tool-detail">
+                <div>
+                    <h3>Frida</h3>
+                    <p>Инструмент динамической инструментации, де-факто стандарт динамического анализа мобильных приложений.</p>
+                    <p>Использовался для обхода проверок целостности, перехвата вызовов криптографических функций.</p>
+                    <ul>
+                        <li>Динамическая инструментация</li>
+                        <li>Перехват вызовов</li>
+                        <li>Обход проверок целостности</li>
+                    </ul>
+                </div>
+                <div style="background: #eff6ff; border-radius: 12px; padding: 24px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                    <span style="font-size: 4rem;">⚙️</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="tab-objection">
+            <div class="tool-detail">
+                <div>
+                    <h3>Objection</h3>
+                    <p>Автоматизация типовых проверок на основе Frida (обход SSL pinning, доступ к хранилищам).</p>
+                    <p>Снижает трудозатраты на рутинные проверки при динамическом анализе.</p>
+                    <ul>
+                        <li>Автоматизация рутинных проверок</li>
+                        <li>Обход SSL pinning</li>
+                        <li>Доступ к хранилищам</li>
+                    </ul>
+                </div>
+                <div style="background: #eff6ff; border-radius: 12px; padding: 24px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                    <span style="font-size: 4rem;">🤖</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="tab-mitmproxy">
+            <div class="tool-detail">
+                <div>
+                    <h3>mitmproxy</h3>
+                    <p>Интерактивный прокси для перехвата и модификации TLS-трафика.</p>
+                    <p>Позволяет воспроизводить сценарии MITM-атак и проверять поведение приложения при подмене сертификатов.</p>
+                    <ul>
+                        <li>Перехват TLS-трафика</li>
+                        <li>Модификация запросов</li>
+                        <li>Воспроизведение MITM-атак</li>
+                    </ul>
+                </div>
+                <div style="background: #eff6ff; border-radius: 12px; padding: 24px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                    <span style="font-size: 4rem;">🌐</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== ПРОТОТИП ===== -->
+<section class="section" id="prototype" style="background: #ffffff;">
+    <div class="container">
+        <h2 class="section-title">Экспериментальный прототип</h2>
+        <p class="section-subtitle">Мобильное приложение с модульной архитектурой, реализующее комплекс методов защиты персональных данных.</p>
+
+        <div class="architecture-diagram">
+            <h3 style="color: #0b1e33; margin-bottom: 8px;">Архитектура защищённого мобильного приложения</h3>
+            <p style="margin-bottom: 24px;">Центральный координатор — DataRepository. Модули: AuthManager, SecureStorage, NetworkClient, IntegrityChecker.</p>
+            <div class="arch-row">
+                <div class="arch-box">AuthManager</div>
+                <div class="arch-box primary">DataRepository</div>
+                <div class="arch-box">NetworkClient</div>
+            </div>
+            <div class="arch-row">
+                <div class="arch-box">SecureStorage<br><small style="font-weight: 400; font-size: 0.75rem;">(Keystore / Keychain)</small></div>
+                <div class="arch-box">IntegrityChecker<br><small style="font-weight: 400; font-size: 0.75rem;">(Root/Jailbreak detection)</small></div>
+            </div>
+        </div>
+
+        <h3 style="font-size: 1.3rem; font-weight: 600; margin-top: 40px; margin-bottom: 16px;">Ключевые реализованные методы</h3>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">🔐</div>
+                <h3>Шифрование «at rest»</h3>
+                <p>AES-256-GCM с конвертным шифрованием. Ключ хранится в Android Keystore (StrongBox) или Secure Enclave + Keychain на iOS.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔗</div>
+                <h3>Certificate pinning</h3>
+                <p>Привязка к публичному ключу сервера с отказом от соединения при несовпадении. Защита от MITM-атак.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">👤</div>
+                <h3>Многофакторная аутентификация</h3>
+                <p>Биометрическая разблокировка ключей, управление сессиями, интеграция с OAuth-потоками.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🛡️</div>
+                <h3>Противодействие анализу</h3>
+                <p>Обфускация, обнаружение root/jailbreak, защита от динамической инструментации, проверка целостности кода.</p>
+            </div>
+        </div>
+
+        <h3 style="font-size: 1.3rem; font-weight: 600; margin-top: 48px; margin-bottom: 16px;">Пример кода: безопасное хранение ключа (Kotlin)</h3>
+        <div class="code-block">
+            <span class="comment">// Использование Android Keystore для генерации и хранения AES-ключа</span><br>
+            <span class="keyword">val</span> keyStore = KeyStore.getInstance(<span class="string">"AndroidKeyStore"</span>)<br>
+            keyStore.load(<span class="keyword">null</span>)<br><br>
+            <span class="keyword">val</span> keyGenerator = KeyGenerator.getInstance(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;KeyProperties.KEY_ALGORITHM_AES, <span class="string">"AndroidKeyStore"</span><br>
+            )<br><br>
+            keyGenerator.init(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;KeyGenParameterSpec.Builder(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"master_key"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;.setBlockModes(KeyProperties.BLOCK_MODE_GCM)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;.setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;.setKeySize(<span class="string">256</span>)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;.build()<br>
+            )<br><br>
+            <span class="keyword">val</span> secretKey = keyGenerator.generateKey()
+        </div>
+        <p style="color: #64748b; font-size: 0.9rem;">В режиме «без защиты» данные сохранялись в SharedPreferences/NSUserDefaults в открытом виде; в режиме «с защитой» — шифровались, а ключ помещался в аппаратно-защищённое хранилище.</p>
+    </div>
+</section>
+
+<!-- ===== РЕЗУЛЬТАТЫ ===== -->
+<section class="section" id="results">
+    <div class="container">
+        <h2 class="section-title">Результаты экспериментов</h2>
+        <p class="section-subtitle">Количественная оценка эффективности методов защиты: устойчивость к атакам, производительность, обнаруживаемость статическим анализом.</p>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">0%</div>
+                <div class="metric-label">Успешных атак на данные<br>в режиме «с защитой»</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">100%</div>
+                <div class="metric-label">Данных считано<br>в режиме «без защиты»</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">3–5 мс</div>
+                <div class="metric-label">Среднее время шифрования<br>записи 1 КБ</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0</div>
+                <div class="metric-label">Артефактов, обнаруженных<br>статическим анализом<br>(при использовании методов)</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;">Сравнение режимов защиты по результатам атак</h3>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 16px;">Доля успешных атакующих воздействий (чем ниже, тем лучше)</p>
+            <div class="chart-bars">
+                <div class="chart-row">
+                    <div class="chart-label">Чтение локального хранилища</div>
+                    <div class="chart-bar-wrap">
+                        <div class="chart-bar red" style="width: 100%;">100% (без защиты)</div>
+                    </div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-label">Чтение локального хранилища</div>
+                    <div class="chart-bar-wrap">
+                        <div class="chart-bar" style="width: 0%; min-width: 40px;">0% (с защитой)</div>
+                    </div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-label">Перехват трафика (MITM)</div>
+                    <div class="chart-bar-wrap">
+                        <div class="chart-bar orange" style="width: 100%;">100% (без pinning)</div>
+                    </div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-label">Перехват трафика (MITM)</div>
+                    <div class="chart-bar-wrap">
+                        <div class="chart-bar" style="width: 0%; min-width: 40px;">0% (с pinning)</div>
+                    </div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-label">Извлечение ключа (Frida)</div>
+                    <div class="chart-bar-wrap">
+                        <div class="chart-bar red" style="width: 100%;">100% (без защиты)</div>
+                    </div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-label">Извлечение ключа (Frida)</div>
+                    <div class="chart-bar-wrap">
+                        <div class="chart-bar" style="width: 0%; min-width: 40px;">0% (с Keystore)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="font-size: 1.3rem; font-weight: 600; margin-top: 48px; margin-bottom: 16px;">Ключевые выводы экспериментов</h3>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">✅</div>
+                <h3>Шифрование + Keystore</h3>
+                <p>Полностью предотвращает чтение данных при adb backup и динамической инструментации. Накладные расходы по времени незначительны (3–5 мс на запись).</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">✅</div>
+                <h3>Certificate pinning</h3>
+                <p>Блокирует MITM-атаки даже при установленном доверенном сертификате атакующего. Обнаруживается статическим анализом, но требует правильной настройки.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚠️</div>
+                <h3>Обфускация и anti-root</h3>
+                <p>Повышают сложность обратной разработки, но не являются абсолютной защитой. Должны комбинироваться с другими методами.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== РЕКОМЕНДАЦИИ ===== -->
+<section class="section" id="recommendations" style="background: #ffffff;">
+    <div class="container">
+        <h2 class="section-title">Рекомендации по выбору методов защиты</h2>
+        <p class="section-subtitle">Рекомендации сформулированы в виде набора комбинаций, соответствующих различным моделям угроз и классам приложений.</p>
+
+        <div class="rec-list">
+            <div class="rec-item">
+                <div class="rec-number">1</div>
+                <div class="rec-content">
+                    <h4>Для приложений с высокими требованиями к конфиденциальности (финансы, медицина)</h4>
+                    <p>Обязательное использование AES-256-GCM для данных на устройстве, аппаратно-защищённое хранение ключей (Android Keystore / Secure Enclave), certificate pinning, многофакторная аутентификация, обфускация и обнаружение root/jailbreak. Регулярный статический и динамический анализ.</p>
+                </div>
+            </div>
+            <div class="rec-item">
+                <div class="rec-number">2</div>
+                <div class="rec-content">
+                    <h4>Для приложений с умеренными требованиями (социальные сети, сервисы доставки)</h4>
+                    <p>Шифрование чувствительных данных на устройстве, TLS 1.3 с certificate pinning, безопасное управление сессиями. Достаточно базовой обфускации и периодических проверок целостности.</p>
+                </div>
+            </div>
+            <div class="rec-item">
+                <div class="rec-number">3</div>
+                <div class="rec-content">
+                    <h4>Для приложений с минимальной обработкой ПДн (утилиты, игры)</h4>
+                    <p>Достаточно стандартных механизмов ОС: шифрование резервных копий, запрет логирования ПДн, использование HTTPS. Дополнительные методы применяются по мере необходимости.</p>
+                </div>
+            </div>
+            <div class="rec-item">
+                <div class="rec-number">4</div>
+                <div class="rec-content">
+                    <h4>Общие рекомендации по процессу</h4>
+                    <p>Внедрение практик безопасной разработки (Secure SDLC), регулярное проведение статического и динамического анализа (MobSF, Semgrep, Frida), обучение разработчиков, документирование модели угроз и принятых мер защиты.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="container footer-inner">
+        <div>
+            <p><strong>PrivacyShield</strong> — исследовательский проект по защите персональных данных в мобильных приложениях.</p>
+            <p style="margin-top: 8px; font-size: 0.85rem;">Красноярский колледж радиоэлектроники и информационных технологий, 2025.</p>
+        </div>
+        <div>
+            <a href="#" style="font-size: 0.9rem;">Скачать полный отчёт (PDF)</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    // Мобильное меню
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mainNav = document.getElementById('mainNav');
+    mobileMenuBtn.addEventListener('click', () => {
+        mainNav.classList.toggle('open');
+    });
+
+    // Закрытие меню при клике на ссылку (мобильные)
+    document.querySelectorAll('.nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            mainNav.classList.remove('open');
+        });
+    });
+
+    // Табы для инструментов
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            // Убираем active у всех кнопок и панелей
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabPanels.forEach(p => p.classList.remove('active'));
+            // Добавляем active текущей кнопке и панели
+            btn.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        });
+    });
+
+    // Плавная прокрутка для якорных ссылок (уже есть scroll-behavior: smooth)
+    // Дополнительно можно добавить анимацию для полосок chart-bar при появлении
+    // Но это опционально, оставим как есть.
+
+    // Анимация появления полосок при прокрутке (для красоты)
+    const chartBars = document.querySelectorAll('.chart-bar');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Уже заданы ширины в inline-стилях, можно оставить
+                entry.target.style.opacity = 1;
+            }
+        });
+    }, { threshold: 0.1 });
+
+    chartBars.forEach(bar => {
+        bar.style.opacity = 0;
+        bar.style.transition = 'width 1s ease, opacity 0.5s ease';
+        observer.observe(bar);
+    });
+</script>
+</body>
+</html>
